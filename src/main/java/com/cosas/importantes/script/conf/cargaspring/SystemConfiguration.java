@@ -16,6 +16,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -77,6 +79,13 @@ public class SystemConfiguration {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     	return new PropertySourcesPlaceholderConfigurer();    
+    }
+    
+    // Evitar que nos de una excepción al ejeuctar spring batch con TaskScheduler.
+    
+    @Bean
+    public TaskScheduler taskScheduler() {
+    	return new ConcurrentTaskScheduler();
     }
 
 }
