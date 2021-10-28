@@ -10,6 +10,7 @@ public class Prueba{
 	
 
 //	public void execute(JobExecutionContext context) throws JobExecutionException {
+	@SuppressWarnings("resource")
 	public static void main (String[] args) {
 		
 	/* Se llama al ApplicationContext para cargar los datos al inicar la aplicación spring de forma manual.
@@ -19,8 +20,7 @@ public class Prueba{
 			var ctx = new AnnotationConfigApplicationContext();
 			ctx.scan("es.chsegura");
 			ctx.refresh();
-			ServicioPrueba sp=(ServicioPrueba) ctx.getBean("servicioPrueba");
-
+			ServicioPrueba sp = (ServicioPrueba) ctx.getBean("servicioPrueba");
 			sp.probarGeiser();
 		} catch (Exception e) {
 			e.printStackTrace();

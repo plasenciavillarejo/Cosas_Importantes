@@ -1,4 +1,4 @@
-package com.cosas.importantes.script.conf.cargaspring;
+package es.chsegura.persistenciageiser.app;
 
 
 import java.util.Properties;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -21,17 +22,12 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
-
-/* Cuando no se usa spring-boot debemos de cargar las inyecciones de forma manual al iniciar el proceso.
- * Se hace con la siguiente configuraracion.
- * Posteriormente en el método main se realiza la carga.*/
-
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager", basePackages =  "es.chsegura.persistenciageiser.dao")
 @ComponentScan(basePackages = { "es.chsegura.persistenciageiser" })
 @PropertySource("classpath:/application.properties")
+@ImportResource("classpath:/document-cfg.xml")
 public class SystemConfiguration {
 
 	// Jpa Configuration
@@ -80,13 +76,12 @@ public class SystemConfiguration {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     	return new PropertySourcesPlaceholderConfigurer();    
     }
-    
-    // Evitar que nos de una excepción al ejeuctar spring batch con TaskScheduler.
-    
-    @Bean
-    public TaskScheduler taskScheduler() {
-    	return new ConcurrentTaskScheduler();
-    }
 
+    /* Configuración Planificador de tareas "TaskScheduler" necesario para la implementación del @Scheduling de Spring 
+      Evitamos que nos indique una excepción -> No qualifying bean of type [org.springframework.scheduling.TaskScheduler] is defined*/
+	@Bean
+	public TaskScheduler taskScheduler() {
+		return new ConcurrentTaskScheduler();
+	}
 }
 
